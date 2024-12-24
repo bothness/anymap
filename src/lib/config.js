@@ -2,7 +2,7 @@ export const mapTilesOptions = [
   {
     id: "watercolor",
     label: "Stamen Watercolor",
-    url: (x, y, z) => `https://tiles.stadiamaps.com/tiles/stamen_watercolor/${z}/${x}/${y}.jpg`,
+    url: (x, y, z) => `https://watercolormaps.collection.cooperhewitt.org/tile/watercolor/${z}/${x}/${y}.jpg`,
     attribution: `Map tiles by <a target="_blank" href="http://maps.stamen.com">Stamen Design</a>. Data by <a target="_blank" href="http://openstreetmap.org/copyright">OpenStreetMap contributors</a>.`,
     maxZoom: 16
   },
