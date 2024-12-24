@@ -114,12 +114,12 @@
     color: white;
     font-weight: bold;
   }
-  .button:hover, .button:focus, .button:active {
+  .button:not(:disabled):hover, .button:focus, .button:active {
     background: #006060;
   }
   button:disabled {
-    background: grey;
     margin-bottom: 0;
+    background: grey;
   }
   select {
     width: 100%;
