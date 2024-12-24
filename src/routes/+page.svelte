@@ -1,4 +1,5 @@
 <script>
+  import {getContext} from "svelte";
   import {base} from "$app/paths";
   import {page} from "$app/stores";
   import {goto} from "$app/navigation";
@@ -7,12 +8,13 @@
 	import Search from "$lib/Search.svelte";
   import Icon from "$lib/Icon.svelte";
   import ShareButtons from "$lib/ShareButtons.svelte";
+  import Credit from "$lib/Credit.svelte";
 
-  export let data;
+  const config = getContext("config");
 
-  let placeCode = data?.place?.code;
-  let difficulty = difficultyOptions.find(op => op.gridSize === data.gridSize) || difficultyOptions[1];
-  let mapTiles = mapTilesOptions.find(op => op.id === data.mapTiles) || mapTilesOptions[0];
+  $: placeCode = $config?.place?.code;
+  $: difficulty = difficultyOptions.find(op => op.gridSize === $config.gridSize) || difficultyOptions[1];
+  $: mapTiles = mapTilesOptions.find(op => op.id === $config.mapTiles) || mapTilesOptions[0];
   let shareOpen = false;
 
 	async function suggest(query, populateResults) {
@@ -46,7 +48,7 @@
     </div>
   </div>
   <form on:submit|preventDefault={() => goto(`${base}/${placeCode}?maptiles=${mapTiles.id}&gridsize=${difficulty.gridSize}`)}>
-    <Search value={data?.place?.name || ""} suggest={throttle(suggest, 1000)} on:change={selectPlace}/>
+    <Search value={$config.place?.name || ""} suggest={throttle(suggest, 1000)} on:change={selectPlace}/>
     <div class="columns">
       <div>
         <label>
@@ -77,9 +79,7 @@
       </div>
     </div>
   </form>
-  <p class="credit">
-    Any Map Puzzle was designed and coded by <a target="_blank" href="https://bsky.app/profile/bothness.bsky.social">Ahmad Barclay</a>, inspired by Eugene Alvin Villar's <a target="_blank" href="https://seav.github.io/osm-15-puzzle/">OSM 15 Puzzle</a>. View the <a target="_blank" href="https://github.com/bothness/anymap/">source code</a> on Github. Area search powered by <a target="_blank" href="https://nominatim.org/">Nominatim</a>. {@html mapTiles.attribution}
-  </p>
+  <Credit attribution={mapTiles.attribution}/>
 </main>
 
 <style>

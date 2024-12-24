@@ -1,17 +1,19 @@
 <script>
 	// import {flip} from "svelte/animate";
-  import {onMount} from "svelte";
+  import {onMount, getContext} from "svelte";
   import {base} from "$app/paths";
 	import {page} from "$app/stores";
 	import * as tb from "@mapbox/tilebelt";
   import {mapTilesOptions} from "$lib/config";
 	import Icon from "$lib/Icon.svelte";
 	import ShareButtons from "$lib/ShareButtons.svelte";
+	import Credit from "$lib/Credit.svelte";
 
-  export let data;
+  const config = getContext("config");
 
-  const mapTiles = mapTilesOptions.find(option => option.id === data.mapTiles) || mapTilesOptions[0];
-  const gridSize = data.gridSize;
+  const mapTiles = mapTilesOptions.find(option => option.id === $config.mapTiles) || mapTilesOptions[0];
+  const gridSize = $config.gridSize;
+	const gridGap = 7 - gridSize;
 
 	let tiles, blankTile, width;
   let ready = false;
@@ -118,8 +120,8 @@
 
   async function initGrid() {
 		complete = false;
-		const min = tb.pointToTileFraction(...data.place.bbox.slice(0, 2), 0);
-		const max = tb.pointToTileFraction(...data.place.bbox.slice(2), 0);
+		const min = tb.pointToTileFraction(...$config.place.bbox.slice(0, 2), 0);
+		const max = tb.pointToTileFraction(...$config.place.bbox.slice(2), 0);
 		let zoom = 0;
 		let diff = [max[0] - min[0], min[1] - max[1]];
 		while (zoom < mapTiles.maxZoom && diff[0] < gridSize && diff[1] < gridSize) {
@@ -127,8 +129,8 @@
 			zoom ++;
 		}
 		const centre = gridSize % 2 === 1 ?
-			tb.pointToTile(...data.place.centroid, zoom) :
-			tb.pointToTileFraction(...data.place.centroid, zoom)
+			tb.pointToTile(...$config.place.centroid, zoom) :
+			tb.pointToTileFraction(...$config.place.centroid, zoom)
 				.map(val => Math.round(val));
 		tiles = makeTiles(centre);
 		const res = await fetch(mapTiles.url(...tiles[0][0].xyz));
@@ -142,21 +144,14 @@
   onMount(initGrid);
 </script>
 
-<!-- <svelte:head>
-	<title>{data.place.name} Map Puzzle</title>
-	<meta property="og:title" content="{data.place.name} Map Puzzle">
-  <meta property="og:description" content="Customised map tile puzzles for any place in the world.">
-  <meta name="description" content="Customised map tile puzzles for any place in the world.">
-</svelte:head> -->
-
 <main>
-  <nav>&lt; <a href="{base}/?place={data.place.code}&maptiles={mapTiles.id}&gridsize={gridSize}">Any Map Puzzle</a></nav>
+  <nav>&lt; <a href="{base}/">Any Map Puzzle</a></nav>
 	<div class="title-block">
-		<h1 class="title">{data.place.name}</h1>
+		<h1 class="title">{$config.place.name}</h1>
 		<div class="floating-icons">
 			<button class="icon-button" on:click={initGrid}><Icon type="shuffle" margin/>Shuffle</button>
 			<button class="icon-button" on:click={() => shareOpen = !shareOpen}><Icon type="share" margin/>Share</button>
-			<ShareButtons message="Try this {data.place.name} map puzzle %23AnyMapPuzzle" url={$page.url.href} bind:open={shareOpen}/>
+			<ShareButtons message="Try this {$config.place.name} map puzzle %23AnyMapPuzzle" url={$page.url.href} bind:open={shareOpen}/>
 		</div>
 	</div>
   <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
@@ -167,6 +162,7 @@
 			class="grid"
 			bind:clientWidth={width}
 			style:height="{width || 100}px"
+			style:margin-right="-{gridGap}px"
 			on:focus={(e) => e.target.scrollIntoView()}
 			on:keydown={keyMove}>
       {#each tiles.flat().sort((a, b) => a.i - b.i) as tile (tile.i)}
@@ -177,8 +173,8 @@
 					class:fade-in={tile.blank}
           style:left="{100 * (tile.cX / gridSize)}%"
           style:top="{100 * (tile.cY / gridSize)}%"
-          style:width="calc({100 / gridSize}% - 4px)"
-          style:height="calc({100 / gridSize}% - 4px)"
+          style:width="calc({100 / gridSize}% - {gridGap}px)"
+          style:height="calc({100 / gridSize}% - {gridGap}px)"
           on:click={() => move(tile)}>
           <img
 						class="tile-img"
@@ -193,12 +189,11 @@
 			map tiles not available for this area. Try using
 			{@html mapTilesOptions
 				.filter(op => op.id !== mapTiles.id)
-				.map(op => `<a data-sveltekit-reload="" href="${$page.url.href.replace(mapTiles.id, op.id)}">${op.label}</a>`).join(" or ")}.
+				.map(op => `<a data-sveltekit-reload="" href="${$page.url.href.replace(mapTiles.id, op.id)}">${op.label}</a>`).join(" or ")}
+				tiles.
 		</div>
 	{/if}
-  <p class="credit">
-    Any Map Puzzle was designed and coded by <a target="_blank" href="https://bsky.app/profile/bothness.bsky.social">Ahmad Barclay</a>, inspired by Eugene Alvin Villar's <a target="_blank" href="https://seav.github.io/osm-15-puzzle/">OSM 15 Puzzle</a>. View the <a target="_blank" href="https://github.com/bothness/anymap/">source code</a> on Github. {@html mapTiles.attribution}
-  </p>
+  <Credit attribution={mapTiles.attribution}/>
 </main>
 
 <style>
@@ -208,7 +203,6 @@
 	.grid {
 		display: block;
     position: relative;
-    margin-right: -4px;
 	}
 	.tile {
     position: absolute;

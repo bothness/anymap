@@ -7,7 +7,7 @@ import { base } from '$app/paths';
 /** @type {import('./$types').PageLoad} */
 export async function load({ params, url, fetch }) {
   let place = null;
-  const code = params?.code || url.searchParams.get("place");
+  const code = params?.code;
 
   if (code) {
     const res = await fetch(`https://nominatim.openstreetmap.org/lookup?osm_ids=${code}&format=json`);

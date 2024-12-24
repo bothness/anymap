@@ -19,7 +19,8 @@ body {
 h1 {
   font-family: "DM Serif Display", serif;
 	font-size: 2.4em;
-	margin: 22px 0 12px;
+	line-height: 1.1;
+	margin: 22px 0 16px;
 }
 
 a {
@@ -89,10 +90,6 @@ main {
   margin: 0 auto;
 }
 
-.credit {
-  font-size: 0.9em;
-}
-
 .icon-button {
 	display: inline-flex;
 	background: none;
@@ -100,6 +97,14 @@ main {
 	padding: 4px 2px;
 	cursor: pointer;
 	margin: 0;
+	color: black;
+}
+
+.icon-button:focus {
+	box-shadow: none;
+}
+
+a.icon-button:visited {
 	color: black;
 }
 
