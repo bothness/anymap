@@ -133,11 +133,16 @@
 			tb.pointToTileFraction(...$config.place.centroid, zoom)
 				.map(val => Math.round(val));
 		tiles = makeTiles(centre);
-		const res = await fetch(mapTiles.url(...tiles[0][0].xyz));
-		if (res.status === 200) {
-			shuffleGrid(gridSize * gridSize * 4);
-    	ready = true;
-		} else {
+
+		try {
+			const res = await fetch(mapTiles.url(...tiles[0][0].xyz));
+			if (res.status === 200) {
+				shuffleGrid(gridSize * gridSize * 4);
+				ready = true;
+			} else {
+				failed = true;
+			}
+		} catch {
 			failed = true;
 		}
 	}
