@@ -27,7 +27,7 @@
       .map(f => ({
         code: f.properties.osm_type[0].toUpperCase() + f.properties.osm_id,
         name: f.properties.name,
-        group: f.properties.display_name.slice(f.properties.name.length + 2).replace(/israel$/, "Palestine"),
+        group: f.properties.display_name.slice(f.properties.name.length + 2).replace(/israel$/i, "Palestine"),
         bbox: f.bbox,
         centroid: f.geometry.coordinates
 		}));
