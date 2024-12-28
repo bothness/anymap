@@ -28,10 +28,12 @@ export async function load({ params, url, fetch }) {
     const val = +(url.searchParams.get("gridsize") || 4);
     return val < 3 ? 3 : val > 6 ? 6 : val;
   })();
+  const zoomOffset = +(url.searchParams.get("zoom") || 0);
 
 	return {
 		place,
     mapTiles,
-    gridSize
+    gridSize,
+    zoomOffset
 	};
 }

@@ -40,9 +40,9 @@
 </script>
 
 <main>
-  <div class="title-block">
-    <h1 class="title">Any Map Puzzle</h1>
-    <div class="floating-icons">
+  <div class="flex-row">
+    <h1 class="flex-left">Any Map Puzzle</h1>
+    <div class="floating-icons flex-right">
       <button class="icon-button" on:click={() => shareOpen = !shareOpen}><Icon type="share" margin/>Share</button>
       <ShareButtons message="Play map puzzles of any place %23AnyMapPuzzle" url={$page.url.href} bind:open={shareOpen}/>
     </div>

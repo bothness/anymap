@@ -50,7 +50,7 @@ input, button, select, textarea, .button {
 	border-radius: 4px;
 }
 
-*:focus {
+input:focus, button:focus, select:focus, textarea:focus, .grid:focus, a:focus {
   outline: 3px solid #fd0;
 }
 
@@ -108,19 +108,39 @@ a.icon-button:visited {
 	color: black;
 }
 
-.title-block {
+.zoom-button {
+	padding: 3px;
+	margin-left: 4px;
+	border: 2px solid black;
+	border-radius: 50%;
+}
+
+.zoom-button:hover {
+	background: #ddd;
+}
+
+.zoom-button.disabled {
+	pointer-events: none;
+	color: lightgrey !important;
+	border-color: lightgrey;
+}
+
+.flex-row {
 	display: flex;
 	flex-direction: row;
 	align-items: flex-end;
 }
 
-.title {
+.flex-left {
 	flex-grow: 1;
 }
 
-.floating-icons {
+.flex-right {
 	flex-shrink: 1;
-	margin-bottom: 16px;
 	text-align: right;
+}
+
+.floating-icons {
+	margin-bottom: 16px;
 	position: relative;
 }

@@ -1,6 +1,7 @@
 <script>
 	// import {flip} from "svelte/animate";
   import {onMount, getContext} from "svelte";
+	import {afterNavigate} from "$app/navigation";
   import {base} from "$app/paths";
 	import {page} from "$app/stores";
 	import * as tb from "@mapbox/tilebelt";
@@ -8,14 +9,16 @@
 	import Icon from "$lib/Icon.svelte";
 	import ShareButtons from "$lib/ShareButtons.svelte";
 	import Credit from "$lib/Credit.svelte";
+	import { read } from "$app/server";
 
   const config = getContext("config");
-
-  const mapTiles = mapTilesOptions.find(option => option.id === $config.mapTiles) || mapTilesOptions[0];
   const gridSize = $config.gridSize;
 	const gridGap = 7 - gridSize;
 
-	let tiles, blankTile, width;
+	$: zoomOffset = $config.zoomOffset;
+  $: mapTiles = mapTilesOptions.find(option => option.id === $config.mapTiles) || mapTilesOptions[0];
+
+	let tiles, blankTile, currentZoom, width;
   let ready = false;
 	let failed = false;
   let complete = false;
@@ -23,7 +26,7 @@
 
 	function makeTiles(centre) {
 		const half = Math.floor(gridSize / 2);
-		const tl = [centre[0] - half, centre[1] - half, centre[2]];
+		const tl = [centre[0] - half, centre[1] - half, centre[2]].map(xy => xy < 0 ? 0 : xy);
 		const tiles = [];
     for (let x = 0; x < gridSize; x ++) {
 			const col = [];
@@ -128,6 +131,12 @@
 			diff = diff.map(d => d * 2);
 			zoom ++;
 		}
+		if (zoomOffset) zoom = (() => {
+			let z = zoom + zoomOffset;
+			return z < 2 ? 2 : z > mapTiles.maxZoom ? mapTiles.maxZoom : z;
+		})();
+		currentZoom = zoom;
+
 		const centre = gridSize % 2 === 1 ?
 			tb.pointToTile(...$config.place.centroid, zoom) :
 			tb.pointToTileFraction(...$config.place.centroid, zoom)
@@ -148,14 +157,34 @@
 			}
 		}
 	}
-  onMount(initGrid);
+  afterNavigate(() => {
+		ready = false;
+		initGrid();
+	});
 </script>
 
 <main>
-  <nav>&lt; <a href="{base}/">Any Map Puzzle</a></nav>
-	<div class="title-block">
-		<h1 class="title">{$config.place.name}</h1>
-		<div class="floating-icons">
+	<div class="flex-row">
+		<nav class="flex-left">&lt; <a href="{base}/">Any Map Puzzle</a></nav>
+		<div class="flex-right">
+			<a
+				class="icon-button zoom-button"
+				class:disabled={currentZoom >= mapTiles.maxZoom}
+				tabindex={currentZoom >= mapTiles.maxZoom ? "-1" : null}
+				href="{base}/{$config.place.code}?maptiles={mapTiles.id}&gridsize={gridSize}{zoomOffset + 1 ? `&zoom=${zoomOffset + 1}` : ''}"
+				title="Zoom in"><Icon type="zoomin"/></a>
+			<a
+				class="icon-button zoom-button"
+				class:disabled={(gridSize < 5 && currentZoom < 3) || currentZoom < 4}
+				tabindex={(gridSize < 5 && currentZoom < 3) || currentZoom < 4 ? "-1" : null}
+				href="{base}/{$config.place.code}?maptiles={mapTiles.id}&gridsize={gridSize}{zoomOffset - 1 ? `&zoom=${zoomOffset - 1}` : ''}"
+				title="Zoom out"
+				><Icon type="zoomout"/></a>
+		</div>
+	</div>
+	<div class="flex-row">
+		<h1 class="flex-left">{$config.place.name}</h1>
+		<div class="floating-icons flex-right">
 			<button class="icon-button" on:click={initGrid}><Icon type="shuffle" margin/>Shuffle</button>
 			<button class="icon-button" on:click={() => shareOpen = !shareOpen}><Icon type="share" margin/>Share</button>
 			<ShareButtons message="Try this {$config.place.name} map puzzle %23AnyMapPuzzle" url={$page.url.href} bind:open={shareOpen}/>
@@ -193,10 +222,10 @@
 	{:else if failed}
 		<div class="grid" bind:clientWidth={width} style="height: {width || 100}px; background: #ddd; padding: 12px;">
 			{mapTiles.label}
-			map tiles not available for this area. Try using
+			map tiles not available for this area. Try zooming out or using
 			{@html mapTilesOptions
 				.filter(op => op.id !== mapTiles.id)
-				.map(op => `<a data-sveltekit-reload="" href="${$page.url.href.replace(mapTiles.id, op.id)}">${op.label}</a>`).join(" or ")}
+				.map(op => `<a href="${$page.url.href.replace(mapTiles.id, op.id)}">${op.label}</a>`).join(" or ")}
 				tiles.
 		</div>
 	{/if}
