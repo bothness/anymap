@@ -1,6 +1,6 @@
 <script>
 	// import {flip} from "svelte/animate";
-  import {onMount, getContext} from "svelte";
+  import {getContext} from "svelte";
 	import {afterNavigate} from "$app/navigation";
   import {base} from "$app/paths";
 	import {page} from "$app/stores";
@@ -9,7 +9,6 @@
 	import Icon from "$lib/Icon.svelte";
 	import ShareButtons from "$lib/ShareButtons.svelte";
 	import Credit from "$lib/Credit.svelte";
-	import { read } from "$app/server";
 
   const config = getContext("config");
   const gridSize = $config.gridSize;
