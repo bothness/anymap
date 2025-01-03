@@ -1,5 +1,5 @@
 # Any Map Puzzle
-This repo contains the source code for [Any Map Puzzle](https://bothness.github.io/anymap), a browser-based game that allows you to play sliding tile puzzles of any named place in the world. The game is inspired by OSM 15 Puzzle, although the code is written from scratch.
+This repo contains the source code for [Any Map Puzzle](https://bothness.github.io/anymap), a browser-based game that allows you to play sliding tile puzzles of any named place in the world. The game is inspired by [OSM 15 Puzzle](https://seav.github.io/osm-15-puzzle/) by Eugene Alvin Villar, although the code is written from scratch.
 
 Please note that there are many ways that it could be improved and optimised. Feel free to create your own fork.
 
