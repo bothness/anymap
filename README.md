@@ -3,8 +3,34 @@ This repo contains the source code for [Any Map Puzzle](https://bothness.github.
 
 Please note that there are many ways that it could be improved and optimised. Feel free to create your own fork.
 
-## How the app works
+## About the code
 Any Map Puzzle is a Svelte Kit app that is currently deployed as a static build on GitHub Pages.
+
+### Running the app locally
+To run the app, you need to have Node.js installed on your system.
+
+To install the dependencies:
+```bash
+npm install
+```
+
+To run the app locally in dev mode:
+```bash
+npm run dev
+```
+
+Once the app is running, you should be able to view it in your web browser at [localhost:5173](http://localhost:5137).
+
+### Building the app
+To create a static build of the app (compiled to vanilla HTML/CSS/JS files):
+```bash
+npm run build
+```
+
+Once the build is complete, the compiled files can be found in the **/build** folder. Note that you'll need to change the paths in the **/svelte.config.js** file to match the location where you intend to deploy the app.
+
+## How the app works
+This section describes the key elements of the app. To understand the code itself, you will need to explore the files in the **/src** folder.
 
 ### Location data
 The app uses the Nominatim API to search for place names, and to get the coordinates (centroid and bounding box) for a selected place using its OpenStreetMap ID.
@@ -22,7 +48,7 @@ The map tiles used for the puzzles are standard XYZ raster map tiles from three 
 ### Game mechanics
 The game mechanics are coded mostly in vanilla JavaScript, relying on Svelte + Svelte Kit for managing data loading, rendering, and a little bit of reactivity.
 
-## Quirks
+## Things to be aware of
 A few interesting quirks to be aware of in this code, and for tile puzzles in general.
 
 ### Calculating the map area
