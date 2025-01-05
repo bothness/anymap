@@ -1,8 +1,6 @@
 <script>
 	export let type = "compass";
 	export let rotation = 0;
-	export let position = "inline";
-	export let clickable = false;
 	export let margin = false;
 
 	const paths = {
@@ -29,8 +27,6 @@
 		bluesky:
 			"M 5.202 2.922 C 7.9545 4.9875 10.914 9.177 12 11.424 c 1.0875 -2.247 4.0455 -6.435 6.798 -8.502 C 20.7825 1.4325 24 0.279 24 3.948 c 0 0.7335 -0.42 6.1575 -0.666 7.038 c -0.858 3.06 -3.9795 3.8415 -6.756 3.369 c 4.854 0.8265 6.09 3.5625 3.4215 6.3 c -5.064 5.196 -7.278 -1.305 -7.845 -2.97 c -0.105 -0.306 -0.1545 -0.45 -0.1545 -0.327 c 0 -0.1215 -0.0495 0.021 -0.153 0.327 c -0.5685 1.665 -2.7825 8.166 -7.8465 2.97 c -2.667 -2.7375 -1.4325 -5.475 3.42 -6.3 c -2.775 0.4725 -5.898 -0.3075 -6.7545 -3.369 C 0.42 10.1055 0 4.68 0 3.948 C 0 0.279 3.2175 1.4325 5.202 2.922 Z"
 	};
-
-	$: style = `transform: scale(1.2) rotate(${-rotation}deg);${["left", "right"].includes(position) ? ` position: absolute; ${position}: 10px;` : ""}`;
 </script>
 
 <svg
@@ -40,9 +36,8 @@
 	clip-rule="evenodd"
 	aria-hidden="true"
 	focusable="false"
-	{style}
+	style:transform="scale(1.2) rotate({-rotation}deg)"
 	class:margin
-	class:noclick={!clickable}
 >
 	<path d={paths[type]}></path>
 </svg>
@@ -55,8 +50,6 @@
 		fill: currentColor;
 		overflow: visible;
 		transition: all 0.3s ease-out;
-	}
-	.noclick {
 		pointer-events: none;
 	}
 	.margin {
