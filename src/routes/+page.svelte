@@ -18,6 +18,7 @@
 	let mapTiles = mapTilesOptions.find((op) => op.id === $config.mapTiles) || mapTilesOptions[0];
 	let shareOpen = false;
 
+  // Function to query the Nominatim API for placed based on a search text string.
 	async function suggest(query, populateResults) {
 		const url = `https://nominatim.openstreetmap.org/search?q=${query}&format=jsonv2`;
 		const res = await fetch(url);

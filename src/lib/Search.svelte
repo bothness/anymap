@@ -1,7 +1,7 @@
 <script>
+	// This component is a Svelte wrapper for https://github.com/alphagov/accessible-autocomplete
 	import "./search.css";
 	import { createEventDispatcher } from "svelte";
-	// import accessibleAutocomplete from "accessible-autocomplete";
 
 	export let value = "";
 	export let options = [];
