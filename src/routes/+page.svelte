@@ -12,24 +12,20 @@
 
   const config = getContext("config");
 
-  $: placeCode = $config?.place?.code;
-  $: difficulty = difficultyOptions.find(op => op.gridSize === $config.gridSize) || difficultyOptions[1];
-  $: mapTiles = mapTilesOptions.find(op => op.id === $config.mapTiles) || mapTilesOptions[0];
+  let placeCode = $config?.place?.code;
+  let difficulty = difficultyOptions.find(op => op.gridSize === $config.gridSize) || difficultyOptions[1];
+  let mapTiles = mapTilesOptions.find(op => op.id === $config.mapTiles) || mapTilesOptions[0];
   let shareOpen = false;
 
 	async function suggest(query, populateResults) {
-		if (query && query.length < 3) return populateResults([]);
-		const url = `https://nominatim.openstreetmap.org/search?q=${query}&format=geojson`;
+		const url = `https://nominatim.openstreetmap.org/search?q=${query}&format=jsonv2`;
 		const res = await fetch(url);
 		const json = await res.json();
-		const results = json.features
-      // .filter(f => f.properties.osm_type !== "node")
-      .map(f => ({
-        code: f.properties.osm_type[0].toUpperCase() + f.properties.osm_id,
-        name: f.properties.name,
-        group: f.properties.display_name.slice(f.properties.name.length + 2).replace(/israel$/i, "Palestine"),
-        bbox: f.bbox,
-        centroid: f.geometry.coordinates
+		const results = json
+      .map(item => ({
+        code: item.osm_type[0].toUpperCase() + item.osm_id,
+        name: item.name,
+        group: item.display_name.slice(item.name.length + 2).replace(/israel$/i, "Palestine")
 		}));
 	  populateResults(results);
 	}
