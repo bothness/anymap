@@ -19,7 +19,7 @@ To run the app locally in dev mode:
 npm run dev
 ```
 
-Once the app is running, you should be able to view it in your web browser at [localhost:5173](http://localhost:5137).
+Once the app is running, you should be able to view it in your web browser at [localhost:5173](http://localhost:5173).
 
 ### Building the app
 To create a static build of the app (compiled to vanilla HTML/CSS/JS files):
@@ -33,17 +33,17 @@ Once the build is complete, the compiled files can be found in the **/build** fo
 This section describes the key elements of the app. To understand the code itself, you will need to explore the files in the **/src** folder.
 
 ### Location data
-The app uses the Nominatim API to search for place names, and to get the coordinates (centroid and bounding box) for a selected place using its OpenStreetMap ID.
+The app uses the [Nominatim API](https://nominatim.org/release-docs/latest/api/Overview/) to search for place names, and to get the coordinates (centroid and bounding box) for a selected place using its OpenStreetMap ID.
 
 ### Tile coordinates
-The XYZ map tile coordinates for the place are calculated with the help of the Mapbox Tilebelt utility.
+The [XYZ map tile](https://en.wikipedia.org/wiki/Tiled_web_map) coordinates for the place are calculated with the help of the [tilebelt](https://github.com/mapbox/tilebelt) utility.
 
 ### Map tile providers
 The map tiles used for the puzzles are standard XYZ raster map tiles from three different providers:
 
-- Stamen Watercolor tiles, hosted by the Smithsonian.
-- OpenStreetMap tiles.
-- ESRI World Imagery tiles.
+- [Stamen Watercolor tiles](https://watercolormaps.collection.cooperhewitt.org/), hosted by the Smithsonian.
+- [OpenStreetMap tiles](https://wiki.openstreetmap.org/wiki/OpenStreetMap_Carto).
+- [ESRI World Imagery tiles](https://www.arcgis.com/home/item.html?id=10df2279f9684e4a9f6a7f08febac2a9).
 
 ### Game mechanics
 The game mechanics are coded mostly in vanilla JavaScript, relying on Svelte + Svelte Kit for managing data loading, rendering, and a little bit of reactivity.
