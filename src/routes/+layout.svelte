@@ -1,18 +1,17 @@
 <script>
-  import { writable } from 'svelte/store';
-  import { setContext } from "svelte";
-  import "../app.css";
+	import { writable } from "svelte/store";
+	import { setContext } from "svelte";
+	import "../app.css";
 
-  export let data;
+	export let data;
 
-  let config = writable(data);
-  setContext("config", config);
+	let config = writable(data);
+	setContext("config", config);
 
-  function updateConfig(data) {
-    if (data.place) config.set(data);
-  }
-  $: updateConfig(data);
-
+	function updateConfig(data) {
+		if (data.place) config.set(data);
+	}
+	$: updateConfig(data);
 </script>
 
-<slot/>
+<slot />

@@ -1,8 +1,8 @@
 <script>
 	import "./search.css";
-	import {createEventDispatcher} from "svelte";
+	import { createEventDispatcher } from "svelte";
 	// import accessibleAutocomplete from "accessible-autocomplete";
-	
+
 	export let value = "";
 	export let options = [];
 	export let id = "autocomplete";
@@ -12,20 +12,26 @@
 	export let placeholder = mode === "search" ? "Type any place name" : "Select one";
 	export let labelKey = "name";
 	export let groupKey = "group";
-	
+
 	export let suggest = (query, populateResults) => {
-		const filteredResults = options.filter(opt => opt[labelKey].match(new RegExp(`\\b${query.replace(/[^\w\s]/gi, "")}`, "i")));
-	  populateResults(filteredResults);
+		const filteredResults = options.filter((opt) =>
+			opt[labelKey].match(new RegExp(`\\b${query.replace(/[^\w\s]/gi, "")}`, "i"))
+		);
+		populateResults(filteredResults);
 	};
 
 	const dispatch = createEventDispatcher();
 
-	function inputValueTemplate (result) {
+	function inputValueTemplate(result) {
 		return result?.[labelKey] || result || "";
 	}
 
-	function suggestionTemplate (result) {
-		return result?.[labelKey] ? (groupKey ? `${result[labelKey]} <span class="muted-text">${result[groupKey]}</span>` : result[labelKey]) : result;
+	function suggestionTemplate(result) {
+		return result?.[labelKey]
+			? groupKey
+				? `${result[labelKey]} <span class="muted-text">${result[groupKey]}</span>`
+				: result[labelKey]
+			: result;
 	}
 
 	function select(option) {
@@ -37,11 +43,11 @@
 
 	function initAutocomplete(element) {
 		window.accessibleAutocomplete({
-		  element,
-		  id,
-			defaultValue: value,	
+			element,
+			id,
+			defaultValue: value,
 			displayMenu: "overlay",
-		  source: suggest, 
+			source: suggest,
 			autoselect: mode === "search",
 			onConfirm: select,
 			placeholder,
@@ -55,7 +61,7 @@
 	}
 </script>
 
-{#if label}<label for="{id}" style:display={hideLabel ? 'none' : null}>{label}</label>{/if}
+{#if label}<label for={id} style:display={hideLabel ? "none" : null}>{label}</label>{/if}
 <div id="{id}-container" class="autocomplete-container" use:initAutocomplete></div>
 
 <style>
