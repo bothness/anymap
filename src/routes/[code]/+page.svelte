@@ -208,8 +208,8 @@
 			>
 			<a
 				class="icon-button zoom-button"
-				class:disabled={(gridSize < 5 && currentZoom < 3) || currentZoom < 4}
-				tabindex={(gridSize < 5 && currentZoom < 3) || currentZoom < 4 ? "-1" : null}
+				class:disabled={(gridSize <= 4 && currentZoom < 3) || (gridSize > 4 && currentZoom < 4)}
+				tabindex={(gridSize <= 4 && currentZoom < 3) || (gridSize > 4 && currentZoom < 4) ? "-1" : null}
 				href="{base}/{$config.place.code}?maptiles={mapTiles.id}&gridsize={gridSize}{zoomOffset - 1
 					? `&zoom=${zoomOffset - 1}`
 					: ''}"
