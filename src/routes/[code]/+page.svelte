@@ -9,6 +9,7 @@
 	import Icon from "$lib/Icon.svelte";
 	import ShareButtons from "$lib/ShareButtons.svelte";
 	import Credit from "$lib/Credit.svelte";
+	import Spinner from "$lib/Spinner.svelte";
 
 	const config = getContext("config");
 	const gridSize = $config.gridSize;
@@ -127,7 +128,7 @@
 		// Function to shuffle the grid.
 		// The grid is shuffled by swapping any two pieces an even number of times.
 		let tile;
-		for (let i = 0; i < n + n % 2; i++) {
+		for (let i = 0; i < n + (n % 2); i++) {
 			const adjacents = [
 				[-1, 0],
 				[1, 0],
@@ -189,6 +190,7 @@
 	// Initialise the grid when the page loads or the URL changes.
 	afterNavigate(() => {
 		ready = false;
+		failed = false;
 		initGrid();
 	});
 </script>
@@ -209,7 +211,9 @@
 			<a
 				class="icon-button zoom-button"
 				class:disabled={(gridSize <= 4 && currentZoom < 3) || (gridSize > 4 && currentZoom < 4)}
-				tabindex={(gridSize <= 4 && currentZoom < 3) || (gridSize > 4 && currentZoom < 4) ? "-1" : null}
+				tabindex={(gridSize <= 4 && currentZoom < 3) || (gridSize > 4 && currentZoom < 4)
+					? "-1"
+					: null}
 				href="{base}/{$config.place.code}?maptiles={mapTiles.id}&gridsize={gridSize}{zoomOffset - 1
 					? `&zoom=${zoomOffset - 1}`
 					: ''}"
@@ -233,16 +237,18 @@
 	</div>
 	<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
 	<!-- svelte-ignore a11y_no_static_element_interactions -->
-	{#if ready}
-		<div
-			tabindex="0"
-			class="grid"
-			bind:clientWidth={width}
-			style:height="{width || 100}px"
-			style:margin-right="-{gridGap}px"
-			on:focus={(e) => e.target.scrollIntoView()}
-			on:keydown={keyMove}
-		>
+	<div
+		tabindex={ready ? "0" : null}
+		class="grid"
+		bind:clientWidth={width}
+		style:height="{width || 100}px"
+		style:margin-right="-{gridGap}px"
+		style:background={failed ? "#ddd" : null}
+		style:padding={failed ? "12px" : null}
+		on:focus={(e) => e.target.scrollIntoView()}
+		on:keydown={keyMove}
+	>
+		{#if ready}
 			{#each tiles.flat().sort((a, b) => a.i - b.i) as tile (tile.i)}
 				<button
 					tabindex="-1"
@@ -258,13 +264,7 @@
 					<img class="tile-img" src={mapTiles.url(...tile.xyz)} alt="" />
 				</button>
 			{/each}
-		</div>
-	{:else if failed}
-		<div
-			class="grid"
-			bind:clientWidth={width}
-			style="height: {width || 100}px; background: #ddd; padding: 12px;"
-		>
+		{:else if failed}
 			{mapTiles.label}
 			map tiles not available for this area. Try zooming out or using
 			{@html mapTilesOptions
@@ -272,8 +272,10 @@
 				.map((op) => `<a href="${$page.url.href.replace(mapTiles.id, op.id)}">${op.label}</a>`)
 				.join(" or ")}
 			tiles.
-		</div>
-	{/if}
+		{:else}
+			<Spinner />
+		{/if}
+	</div>
 	<Credit attribution={mapTiles.attribution} />
 </main>
 
